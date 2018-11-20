@@ -47,6 +47,7 @@ int main(){
 
       /* GRAMMAR : \n E->LESE|LELE|ESE|NSE \n B->ESN|NSN|LNLN|LNSN|LESN|LELN|LMSN|LMLN|MSN|MLN|ASN|ALN \n B->BSN|BLN \n A->BDB|BDE \n E->BSE|BLE|BSM|BLM|BLA|BSA \n E->LNSE|LNLE \n E->LNSM|LNLM \n E->LMLM|LMSM|LESM|LELM|LMSE|LMLE \n E->MSM|MLM|ESM|ELM|MSE|MLE \n E->NSM|NLM \n E->ASA|ALA|ASE|ALE|ESA|ELA \n E->NSA|NLA \n E->ASM|ALM|MSA|MLA \n E->LALA|LASA|LALE|LASE|LELA|LESA \n E->LNLA|LNSA|LMLA|LMSA|LASM|LALM \n B->LASN|LALN \n D->. \n A->NDN|NDE|EDN|EDE \n A->AE|EN \n L->- \n S->+|*|/|^ \n M->(E)|(A)|(B) \n E->1|2|3|4|5|6|7|8|9 \n E->EE \n N->0 \n M->(LE)|(LA)|(LB) \n E->EN */
       printf("Selamat datang di kalkulator canggih kami!\n");
+      DaftarGrammar();
       printf("Silakan input string :\n");
       scanf("%s",a);
       strcpy(kal,a);
@@ -290,6 +291,30 @@ void check(){
   /*E->1|2|3|4|5|6|7|8|9*/
   ShiftReduce("E->1|2|3|4|5|6|7|8|9");
 
+}
+
+void DaftarGrammar() {
+  /*Nampilin daftar grammar*/
+  printf("Daftar Grammar : \n");
+  printf("E->LESE|LELE|LNSE|LNLE|LMSM|LMLM|LESM|LELM|LMSE|LMLE|LNSM|LNLM|LASM|LALM|LASE\n");
+  printf("E->LALE|LISI|LILI|LISE|LILE|LESI|LELI|LMSI|LMLI|LISM|LILM|LNSI|LNLI|LASI|LALI\n");
+  printf("E->ESE|ELE|MSM|MLM|ESM|ELM|MSE|MLE|NSM|NLM|NSE|NLE|BSE|BLE|BSM|BLM|ASE|ALE\n");
+  printf("E->ASM|ALM|ILI|ISI|ALI|ASI|ISE|ILE|ELI|ESI|MLI|MSI|ILM|ISM|NLI|NSI|BLI|BNI\n");
+  printf("E->EE|EN\n");
+  printf("E->1|2|3|4|5|6|7|8|9\n");
+  printf("B->LMSN|LMLN|LNSN|LNLN|LESN|LELN|LMSN|LMLN|LASN|LALN|LISN|LILN\n");
+  printf("B->MSN|MLN|ESN|ELN|BSN|BLN|NSN|NLN|ASN|ALN|ILN|ISN\n");
+  printf("M->(LE)|(LA)|(LB)|(LI)\n");
+  printf("M->(E)|(A)|(B)|(I)\n");
+  printf("A->NDN|NDE|BDN|BDE|EDN|EDE\n");
+  printf("A->AN|AE\n");
+  printf("I->BC|EC|NC|AC\n");
+  printf("I->C\n");
+  printf("C->i\n");
+  printf("N->0\n");
+  printf("D->.\n");
+  printf("L->-\n");
+  printf("S->+|*|/|^\n");
 }
 
 boolean Angka(char c){ //validasi angka
