@@ -7,7 +7,7 @@
 #include "stack.c"
 
 /* Global Variable */
-int k,i,j;
+int k,i,j,c;
 char a[256],chk[25];
 
 /* Constant */
@@ -41,7 +41,6 @@ int main(){
 	double inf=INFINITY;
 	char cmd[20];
 	char kal[256];
-	int c;
 	boolean found,error,imaginer;
 	infotype token,tmp;
 	long l,pj,cnt;
@@ -52,7 +51,7 @@ int main(){
 
 
     /* GRAMMAR : \n E->LESE|LELE|ESE|NSE \n B->ESN|NSN|LNLN|LNSN|LESN|LELN|LMSN|LMLN|MSN|MLN|ASN|ALN \n B->BSN|BLN \n A->BDB|BDE \n E->BSE|BLE|BSM|BLM|BLA|BSA \n E->LNSE|LNLE \n E->LNSM|LNLM \n E->LMLM|LMSM|LESM|LELM|LMSE|LMLE \n E->MSM|MLM|ESM|ELM|MSE|MLE \n E->NSM|NLM \n E->ASA|ALA|ASE|ALE|ESA|ELA \n E->NSA|NLA \n E->ASM|ALM|MSA|MLA \n E->LALA|LASA|LALE|LASE|LELA|LESA \n E->LNLA|LNSA|LMLA|LMSA|LASM|LALM \n B->LASN|LALN \n D->. \n A->NDN|NDE|EDN|EDE \n A->AE|EN \n L->- \n S->+|*|/|^ \n M->(E)|(A)|(B) \n E->1|2|3|4|5|6|7|8|9 \n E->EE \n N->0 \n M->(LE)|(LA)|(LB) \n E->EN */
-    printf("------------------------------------------\n");
+  printf("------------------------------------------\n");
 	printf("Selamat datang di kalkulator canggih kami!\n");
 	printf("------------------------------------------\n");
 	printf("Ketik help untuk melihat daftar command, ketik exit untuk keluar\n");
@@ -67,32 +66,32 @@ int main(){
 		}
 		else
 		if (strcmp(cmd,"grammar") == 0) {
-    		DaftarGrammar();
+    	DaftarGrammar();
 		}
 		else
 		if (strcmp(cmd,"exit") == 0) {
-    		isExit = true;
+    	isExit = true;
 		}
 		else {
 			i = 0; j = 0; k = 0; c = 0; 
+      memset(chk, '\0', sizeof(chk));
 			printf("Hasil :\n");
 			strcpy(a,cmd);
-    		strcpy(kal,a);
-    		c=strlen(a);
-    		for(k=0,i=0; j<c; k++,i++,j++) {
-    			chk[i]=a[j];
-			    a[j]=' ';
-	        	check();
-    		}
-    		check();
+    	strcpy(kal,a);
+    	c=strlen(a);
+  		for(k=0,i=0; j<c; k++,i++,j++) {
+  			chk[i]=a[j];
+		    a[j]=' ';
+	      	check();
+  		}
+  		check();
 
     		if ( ( (( (chk[0] == 'E') || (chk[0] == 'A') || (chk[0] == 'B')|| (chk[0] == 'M') || (chk[0] == 'I') || (chk[0] == 'N') ) && chk[1] == '\0') ||
        		  (chk[0] == 'L' && (chk[1] =='E' || chk[1]=='N' || chk[1] == 'I' || chk[1] == 'A' || chk[1] == 'M') && chk[2] == '\0') ||
        		  (chk[0] == '(' && chk[1] == 'L' && chk[2]=='N' && chk[3]==')' && chk[4] == '\0') ||
        		  (chk[0] == '(' && chk[1]=='N' && chk[2]==')' && chk[3] == '\0' && a[j-1] == ' '))
        		  && a[j-1] == ' '){
-        		CreateEmpty(&stemp);CreateEmpty(&s);CreateEmpty(&srev);
-				l = 0;
+        		CreateEmpty(&stemp);CreateEmpty(&s);CreateEmpty(&srev); l = 0;
         		pj=strlen(kal);
 	      		while(pj>l){
 		      		if(kal[l]=='i'){	//ketika menemukan i saja
@@ -218,7 +217,8 @@ int main(){
         		printf("SYNTAX ERROR\n");
     		}
 		}
-	} while (!isExit);
+	} 
+  while (!isExit);
 	return 0;
 }
 
