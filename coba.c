@@ -227,7 +227,7 @@ void ShiftReduce(char * Grammar) {
           stk[k] = '\0';
         }
       }
-      printf("\n$%s\t%s$\t%s\n",stk,a,ac);
+      printf("$%s\t%s$\t%s\n",stk,a,ac);
       i = i - strlen(gsplit[m]) + 1;
       check();
       break;
