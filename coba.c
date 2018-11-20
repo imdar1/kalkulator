@@ -24,31 +24,29 @@ int main(){
 	    char kal[256];
 	    boolean found,error,imaginer;
 	    infotype token,tmp;
-	    long l=0,pj=strlen(kal),cnt;
+	    long l=0,pj,cnt;
 	    double complex save;
 	    Stack stemp,s,srev;
 	    error=false;
 
 
-      puts("GRAMMAR is : \n E->LESE|LELE|ESE|NSE \n B->ESN|NSN|LNLN|LNSN|LESN|LELN|LMSN|LMLN|MSN|MLN|ASN|ALN \n B->BSN|BLN \n A->BDB|BDE \n E->BSE|BLE|BSM|BLM|BLA|BSA \n E->LNSE|LNLE \n E->LNSM|LNLM \n E->LMLM|LMSM|LESM|LELM|LMSE|LMLE \n E->MSM|MLM|ESM|ELM|MSE|MLE \n E->NSM|NLM \n E->ASA|ALA|ASE|ALE|ESA|ELA \n E->NSA|NLA \n E->ASM|ALM|MSA|MLA \n E->LALA|LASA|LALE|LASE|LELA|LESA \n E->LNLA|LNSA|LMLA|LMSA|LASM|LALM \n B->LASN|LALN \n D->. \n A->NDN|NDE|EDN|EDE \n A->AE|EN \n L->- \n S->+|*|/|^ \n M->(E)|(A)|(B) \n E->1|2|3|4|5|6|7|8|9 \n E->EE \n N->0 \n M->(LE)|(LA)|(LB) \n E->EN");
-      puts("enter input string ");
+      /* GRAMMAR : \n E->LESE|LELE|ESE|NSE \n B->ESN|NSN|LNLN|LNSN|LESN|LELN|LMSN|LMLN|MSN|MLN|ASN|ALN \n B->BSN|BLN \n A->BDB|BDE \n E->BSE|BLE|BSM|BLM|BLA|BSA \n E->LNSE|LNLE \n E->LNSM|LNLM \n E->LMLM|LMSM|LESM|LELM|LMSE|LMLE \n E->MSM|MLM|ESM|ELM|MSE|MLE \n E->NSM|NLM \n E->ASA|ALA|ASE|ALE|ESA|ELA \n E->NSA|NLA \n E->ASM|ALM|MSA|MLA \n E->LALA|LASA|LALE|LASE|LELA|LESA \n E->LNLA|LNSA|LMLA|LMSA|LASM|LALM \n B->LASN|LALN \n D->. \n A->NDN|NDE|EDN|EDE \n A->AE|EN \n L->- \n S->+|*|/|^ \n M->(E)|(A)|(B) \n E->1|2|3|4|5|6|7|8|9 \n E->EE \n N->0 \n M->(LE)|(LA)|(LB) \n E->EN */
+      printf("enter input string : \n");
       scanf("%s",a);
-      //gets(a);
+      strcpy(kal,a);
       c=strlen(a);
       strcpy(act,"SHIFT->");
-      puts("stack \t input \t action");
       for(k=0,i=0; j<c; k++,i++,j++) {
         stk[i]=a[j];
         a[j]=' ';
-        printf("\n$%s\t%s$\t%sid\n",stk,a,act);
         check();
       }
 
       check();
 
-      if (( (stk[0] == 'E') || (stk[0] == 'A') || stk[0] == 'B') && stk[1] == '\0' && a[j-1] == ' '){
-        strcpy(kal,a);
+      if (( (stk[0] == 'E') || (stk[0] == 'A') || stk[0] == 'B') && stk[1] == '\0' && a[j-1] == ' '){        
         CreateEmpty(&stemp);CreateEmpty(&s);CreateEmpty(&srev);
+        pj=strlen(kal);
 	      while(pj>l){
 		      if(kal[l]=='i'){	//ketika menemukan i saja 
 			      token.val=1.000*I;	
