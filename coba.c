@@ -25,13 +25,13 @@ boolean Angka(char c);
 void balik(Stack *s1,Stack *s2);
 /* Membalik stack */
 
-void operasi1(Stack *s1,Stack *s2); 
+void operasi1(Stack *s1,Stack *s2);
 /* Operasi yang mempunyai tingkat prioritas pertama yaitu ^ */
 
-void operasi2(Stack *s1,Stack *s2); 
+void operasi2(Stack *s1,Stack *s2);
 /* Operasi yang mempunyai tingkat prioritas kedua yaitu * dan / */
 
-void operasi3(Stack *s1,Stack *s2); 
+void operasi3(Stack *s1,Stack *s2);
 /* Operasi yang mempunyai tingkat prioritas terakhir yaitu + dan - */
 
 int main(){
@@ -58,8 +58,8 @@ int main(){
       }
       check();
 
-      if ( ( (( (stk[0] == 'E') || (stk[0] == 'A') || (stk[0] == 'B')|| (stk[0] == 'M') || (stk[0] == 'I')) && stk[1] == '\0') ||
-       (stk[0] == 'L' && (stk[1] =='E' || stk[1]=='N') && stk[2] == '\0') ||
+      if ( ( (( (stk[0] == 'E') || (stk[0] == 'A') || (stk[0] == 'B')|| (stk[0] == 'M') || (stk[0] == 'I') || (stk[0] == 'N') ) && stk[1] == '\0') ||
+       (stk[0] == 'L' && (stk[1] =='E' || stk[1]=='N' || stk[1] == 'I' || stk[1] == 'A' || stk[1] == 'M') && stk[2] == '\0') ||
        (stk[0] == '(' && stk[1] == 'L' && stk[2]=='N' && stk[3]==')' && stk[4] == '\0') ||
        (stk[0] == '(' && stk[1]=='N' && stk[2]==')' && stk[3] == '\0' && a[j-1] == ' '))
        && a[j-1] == ' '){
@@ -197,7 +197,7 @@ void ShiftReduce(char * Grammar) {
   int l = strlen(Grammar);
   int m = 3;
   int n = 1;
-  int o = 0; 
+  int o = 0;
   char gsplit[100][10];
 
   gsplit[0][0] = Grammar[0];
@@ -227,26 +227,44 @@ void ShiftReduce(char * Grammar) {
           stk[k] = '\0';
         }
       }
-      printf("$%s\t%s$\t%s\n",stk,a,ac);
+      //printf("$%s\t%s$\t%s\n",stk,a,ac);
       i = i - strlen(gsplit[m]) + 1;
       check();
       break;
-    } 
+    }
   }
 }
 
 
 void check(){
-  strcpy(ac,"REDUCE TO E");
+  //strcpy(ac,"REDUCE TO E");
 
-  /*E->1|2|3|4|5|6|7|8|9*/
-  ShiftReduce("E->1|2|3|4|5|6|7|8|9");
+  /*E->LESE|LELE|LNSE|LNLE|LMSM|LMLM|LESM|LELM|LMSE|LMLE|LNSM|LNLM|LASM|LALM|LASE|LALE|LISI|LILI|LISE|LILE|LESI|LELI|LMSI|LMLI|LISM|LILM|LNSI|LNLI|LASI|LALI*/
+  ShiftReduce("E->LESE|LELE|LNSE|LNLE|LMSM|LMLM|LESM|LELM|LMSE|LMLE|LNSM|LNLM|LASM|LALM|LASE|LALE|LISI|LILI|LISE|LILE|LESI|LELI|LMSI|LMLI|LISM|LILM|LNSI|LNLI|LASI|LALI");
 
-  /* C -> i */
-  ShiftReduce("C->i");
+  /*B->LMSN|LMLN|LNSN|LNLN|LESN|LELN|LMSN|LMLN|LASN|LALN|LISN|LILN*/
+  ShiftReduce("B->LMSN|LMLN|LNSN|LNLN|LESN|LELN|LMSN|LMLN|LASN|LALN|LISN|LILN");
 
-  /*E->EE*/
-  ShiftReduce("E->EE");
+  /*M->(LE)|(LA)|(LB)|(LI)*/
+  ShiftReduce("M->(LE)|(LA)|(LB)|(LI)");
+
+  /*E->ESE|ELE|MSM|MLM|ESM|ELM|MSE|MLE|NSM|NLM|NSE|NLE|BSE|BLE|BSM|BLM|ASE|ALE|ASM|ALM|ILI|ISI|ALI|ASI|ISE|ILE|ELI|ESI|MLI|MSI|ILM|ISM|NLI|NSI|BLI|BNI*/
+  ShiftReduce("E->ESE|ELE|MSM|MLM|ESM|ELM|MSE|MLE|NSM|NLM|NSE|NLE|BSE|BLE|BSM|BLM|ASE|ALE|ASM|ALM|ILI|ISI|ALI|ASI|ISE|ILE|ELI|ESI|MLI|MSI|ILM|ISM|NLI|NSI|BLI|BNI");
+
+  /*B->MSN|MLN|ESN|ELN|BSN|BLN|NSN|NLN|ASN|ALN|ILN|ISN*/
+  ShiftReduce("B->MSN|MLN|ESN|ELN|BSN|BLN|NSN|NLN|ASN|ALN|ILN|ISN");
+
+  /*A->NDN|NDE|BDN|BDE|EDN|EDE*/
+  ShiftReduce("A->NDN|NDE|BDN|BDE|EDN|EDE");
+
+  /*M->(E)|(A)|(B)|(I)*/
+  ShiftReduce("M->(E)|(A)|(B)|(I)");
+
+  /*E->EE|EN*/
+  ShiftReduce("E->EE|EN");
+
+  /*A->AN|AE*/
+  ShiftReduce("A->AN|AE");
 
   /*I->BC|EC|NC|AC*/
   ShiftReduce("I->BC|EC|NC|AC");
@@ -254,8 +272,8 @@ void check(){
   /*I->C*/
   ShiftReduce("I->C");
 
-  /* S->+|*|/|^ */
-  ShiftReduce("S->+|*|/|^");
+  /*C->i*/
+  ShiftReduce("C->i");
 
   /*N->0*/
   ShiftReduce("N->0");
@@ -266,187 +284,11 @@ void check(){
   /*L->-*/
   ShiftReduce("L->-");
 
-  /* E->LESE | LELE */
-  ShiftReduce("E->LESE|LELE");
+  /*S->+|*|/|^*/
+  ShiftReduce("S->+|*|/|^");
 
-  /* E->LNSE | LNLE */
-  ShiftReduce("E->LNSE|LNLE");
-
-  /* E->LMSM | LMLM */
-  ShiftReduce("E->LMSM|LMLM");
-
-  /* E->LESM | LELM */
-  ShiftReduce("E->LESM|LELM");
-
-  /* E->LMSE | LMLE */
-  ShiftReduce("E->LMSE|LMLE"); 
-         
-  /* E->LNSM | LNLM */
-  ShiftReduce("E->LNSM|LNLM");
-
-  /* E->LMSN | LMLN */
-  ShiftReduce("E->LMSN|LMLN"); 
-
-  /* B->LNSN|LNLN */
-  ShiftReduce("B->LNSN|LNLN");  
-
-  /* B->LESN | LELN */
-  ShiftReduce("B->LESN|LELN"); 
-
-  /* B->LMSN | LMLN */
-  ShiftReduce("B->LMSN|LMLN"); 
-
-  /* M->(LE) */
-  ShiftReduce("M->(LE)"); 
-
-  /*E->EN*/
-  ShiftReduce("E->EN");
-
-  /* E->ESE | ELE */
-  ShiftReduce("E->ESE|ELE");
-        
-  /* E->MSM | MLM */
-  ShiftReduce("E->MSM|MLM");
-
-  /* E->ESM | ELM */
-  ShiftReduce("E->ESM|ELM");
-
-  /* E->MSE | MLE */
-  ShiftReduce("E->MSE|MLE");
-
-  /* E->NSM | NLM */
-  ShiftReduce("E->NSM|NLM");
-
-  /* B->MSN | MLN */
-  ShiftReduce("B->MSN|MLN");
-
-  /* B->ESN | ELN */
-  ShiftReduce("B->ESN|ELN");
-
-  /* E->NSE | NLE */
-  ShiftReduce("E->NSE|NLE");
-
-  /* E->BSE | BLE */
-  ShiftReduce("E->BSE|BLE");
-
-  /* E->BSM | BLM */
-  ShiftReduce("E->BSM|BLM");
-
-  /* E->BSA | BLA */
-  ShiftReduce("E->BSA|BLA");
-
-  /* B->BSN | BLN */
-  ShiftReduce("B->BSN|BLN");
-
-  /* B->NSN | NLN */
-  ShiftReduce("B->NSN|NLN");
-
-  /*M->(E)|(A)|(B)|(I)*/
-  ShiftReduce("M->(E)|(A)|(B)|(I)");
-
-  /*Bagian Koma*/
-  /* A->NDN | NDE */
-  ShiftReduce("A->NDN|NDE");
-
-  /* A->BDN | BDE */
-  ShiftReduce("A->BDN|BDE");
-
-  /* A->EDN | EDE */
-  ShiftReduce("A->EDN|EDE");
-
-  /*A->AN | AE*/
-  ShiftReduce("A->AN|AE");
-
-  /* E->LNSA | LNLA */
-  ShiftReduce("E->LNSA|LNLA");
-
-  /* E->LESA | LELA */
-  ShiftReduce("E->LESA|LELA");
-
-  /* E->LASA | LALA */
-  ShiftReduce("E->LASA|LALA");
-
-  /* B->LASN | LALN */
-  ShiftReduce("B->LASN|LALN");
-
-  /* E->LMSA | LMLA */
-  ShiftReduce("E->LMSA|LMLA");
-
-  /* E->LASM | LALM */
-  ShiftReduce("E->LASM|LALM");
-
-  /* E->LASE | LALE */
-  ShiftReduce("E->LASE|LALE");
-
-  /* E->ASA | ALA */
-  ShiftReduce("E->ASA|ALA");
-
-  /* E->ASE | ALE */
-  ShiftReduce("E->ASE|ALE");
-
-  /* E->ESA | ELA */
-  ShiftReduce("E->ESA|ELA");
-
-  /* B->ASN | ALN */
-  ShiftReduce("B->ASN|ALN");
-
-  /* E->NSA | NLA */
-  ShiftReduce("E->NSA|NLA");
-
-  /* E->ASM | ALM */
-  ShiftReduce("E->ASM|ALM");
-
-  /* E->MSA | MLA */
-  ShiftReduce("E->MSA|MLA");
-
-  /*Imajiner*/
-  /* E->LISI | LILI */
-  ShiftReduce("E->LISI|LILI");
-
-  /* E->LISE | LILE */
-  ShiftReduce("E->LISE|LILE");
-
-  /* E->LESI | LELI */
-  ShiftReduce("E->LESI|LELI");
-
-  /* E->LMSI | LMLI */
-  ShiftReduce("E->LMSI|LMLI");
-
-  /* E->LISM | LILM */
-  ShiftReduce("E->LISM|LILM");
-
-  /* E->LNSI | LNLI */
-  ShiftReduce("E->LNSI|LNLI");
-
-  /* E->LASI | LALI */
-  ShiftReduce("E->LASI|LALI");
-
-  /* B->LISN | LILN */
-  ShiftReduce("B->LISN|LILN");
-
-  /* E->ILI | ISI */
-  ShiftReduce("E->ILI|ISI");
-
-  /* E->ALI | ASI */
-  ShiftReduce("E->ALI|ASI");
-
-  /* E->ILE | ISE */
-  ShiftReduce("E->ILE|ISE");
-
-  /* E->ELI | ESI */
-  ShiftReduce("E->ELI|ESI");
-
-  /* E->MLI | MSI */
-  ShiftReduce("E->MLI|MSI");
-
-  /* E->ILM | ISM */
-  ShiftReduce("E->ILM|ISM");
-
-  /* E->NLI | NSI */
-  ShiftReduce("E->NLI|NSI");
-
-  /* B->ILN | ISN */
-  ShiftReduce("B->ILN|ISN");
+  /*E->1|2|3|4|5|6|7|8|9*/
+  ShiftReduce("E->1|2|3|4|5|6|7|8|9");
 
 }
 
