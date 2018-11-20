@@ -7,17 +7,32 @@
 #include "stack.c"
 
 /* Global Variable */
-int k=0,z=0,i=0,j=0,c=0;
-char a[256],ac[20],stk[15],act[10];
-void check();
+int k=0,i=0,j=0,c=0;
+char a[256],ac[20],stk[25];
+
+/* Constant */
 #define ValUndef 0
 
-boolean Angka(char c); //mengecek apakah c merupakan angka
-/*void printStack(Stack *s);*/
-void balik(Stack *s1,Stack *s2);// membalik stack
-void operasi1(Stack *s1,Stack *s2); //operasi yang mempunyai tingkat prioritas pertama yaitu ^
-void operasi2(Stack *s1,Stack *s2); //operasi yang mempunyai tingkat prioritas kedua yaitu * dan /
-void operasi3(Stack *s1,Stack *s2); //operasi yang mempunyai tingkat prioritas terakhir yaitu + dan -
+void ShiftReduce(char*Grammar);
+/* Melakukan shift dan reduce pada grammar/CFG */
+
+void check();
+/* Mengecek input dengan tiap grammar dan memanggil ShiftReduce */
+
+boolean Angka(char c);
+/* Mengecek apakah c adalah angka */
+
+void balik(Stack *s1,Stack *s2);
+/* Membalik stack */
+
+void operasi1(Stack *s1,Stack *s2); 
+/* Operasi yang mempunyai tingkat prioritas pertama yaitu ^ */
+
+void operasi2(Stack *s1,Stack *s2); 
+/* Operasi yang mempunyai tingkat prioritas kedua yaitu * dan / */
+
+void operasi3(Stack *s1,Stack *s2); 
+/* Operasi yang mempunyai tingkat prioritas terakhir yaitu + dan - */
 
 int main(){
       double inf=INFINITY;
@@ -31,20 +46,23 @@ int main(){
 
 
       /* GRAMMAR : \n E->LESE|LELE|ESE|NSE \n B->ESN|NSN|LNLN|LNSN|LESN|LELN|LMSN|LMLN|MSN|MLN|ASN|ALN \n B->BSN|BLN \n A->BDB|BDE \n E->BSE|BLE|BSM|BLM|BLA|BSA \n E->LNSE|LNLE \n E->LNSM|LNLM \n E->LMLM|LMSM|LESM|LELM|LMSE|LMLE \n E->MSM|MLM|ESM|ELM|MSE|MLE \n E->NSM|NLM \n E->ASA|ALA|ASE|ALE|ESA|ELA \n E->NSA|NLA \n E->ASM|ALM|MSA|MLA \n E->LALA|LASA|LALE|LASE|LELA|LESA \n E->LNLA|LNSA|LMLA|LMSA|LASM|LALM \n B->LASN|LALN \n D->. \n A->NDN|NDE|EDN|EDE \n A->AE|EN \n L->- \n S->+|*|/|^ \n M->(E)|(A)|(B) \n E->1|2|3|4|5|6|7|8|9 \n E->EE \n N->0 \n M->(LE)|(LA)|(LB) \n E->EN */
-      printf("enter input string : \n");
+      printf("Selamat datang di kalkulator canggih kami!\n");
+      printf("Silakan input string :\n");
       scanf("%s",a);
       strcpy(kal,a);
       c=strlen(a);
-      strcpy(act,"SHIFT->");
       for(k=0,i=0; j<c; k++,i++,j++) {
         stk[i]=a[j];
         a[j]=' ';
         check();
       }
-
       check();
 
-      if (( (stk[0] == 'E') || (stk[0] == 'A') || stk[0] == 'B') && stk[1] == '\0' && a[j-1] == ' '){
+      if ( ( (( (stk[0] == 'E') || (stk[0] == 'A') || (stk[0] == 'B')|| (stk[0] == 'M') || (stk[0] == 'I')) && stk[1] == '\0') ||
+       (stk[0] == 'L' && (stk[1] =='E' || stk[1]=='N') && stk[2] == '\0') ||
+       (stk[0] == '(' && stk[1] == 'L' && stk[2]=='N' && stk[3]==')' && stk[4] == '\0') ||
+       (stk[0] == '(' && stk[1]=='N' && stk[2]==')' && stk[3] == '\0' && a[j-1] == ' '))
+       && a[j-1] == ' '){
         CreateEmpty(&stemp);CreateEmpty(&s);CreateEmpty(&srev);
         pj=strlen(kal);
 	      while(pj>l){
@@ -170,847 +188,272 @@ int main(){
         }
       }
       else{
-            printf("SYNTAX_ERROR\n");
+            printf("SYNTAX ERROR\n");
       }
     return 0;
    }
 
+void ShiftReduce(char * Grammar) {
+  int l = strlen(Grammar);
+  int m = 3;
+  int n = 1;
+  int o = 0; 
+  char gsplit[100][10];
 
-void check()
-      {
-        /*E->1|2|3|4|5|6|7|8|9*/
-        strcpy(ac,"REDUCE TO E");
-        for(z=0; z<15; z++)
-          if(stk[z]=='1' || stk[z]=='2' || stk[z]=='3' || stk[z]=='4' || stk[z]=='5' || stk[z]=='6' || stk[z]=='7' || stk[z]=='8' || stk[z]=='9')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-            }
+  gsplit[0][0] = Grammar[0];
+  gsplit[0][1] = '\0';
+  while(m < l){
+    if (Grammar[m] != '|'){
+      gsplit[n][o] = Grammar[m];
+      o++;
+    }
+    else {
+      gsplit[n][o] = '\0';
+      o = 0;
+      n++;
+    }
+    m++;
+  }
+  gsplit[n][o] = '\0';
 
-        for(z=0; z<15; z++)
-          if(stk[z]=='i')
-            {
-              stk[z]='C';
-              stk[z+1]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-            }
-
-         /*E->EE*/
-        for(z=0; z<15; z++)
-          if(stk[z] == 'E' && stk[z+1] == 'E')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-1;
-              check();
-            }
-
-        /*I->BC|EC|NC|AC*/
-       for(z=0; z<15; z++)
-         if((stk[z] == 'B' || stk[z] == 'E' || stk[z] == 'N' || stk[z] == 'A') && stk[z+1] == 'C')
-           {
-             stk[z]='I';
-             stk[z+1]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-1;
-             check();
-           }
-
-       /*I->C*/
-       for(z=0; z<15; z++)
-         if(stk[z]=='C')
-           {
-             stk[z]='I';
-             stk[z+1]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-           }
-       /* S->+|-|*|/|^ */
-      for(z=0; z<15; z++)
-        if(stk[z] == '+' || stk[z] == '*' || stk[z] == '/' || stk[z] == '^')
-          {
-            stk[z]='S';
-            stk[z+1]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            check();
-          }
-      /*N->0*/
-      for(z=0; z<15; z++)
-        if(stk[z] == '0')
-          {
-            stk[z]='N';
-            stk[z+1]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            check();
-          }
-
-     /*D->.*/
-      for(z=0; z<15; z++)
-        if(stk[z] == '.')
-          {
-            stk[z]='D';
-            stk[z+1]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            check();
-          }
-
-      /*L->-*/
-      for(z=0; z<15; z++)
-        if(stk[z] == '-')
-          {
-            stk[z]='L';
-            stk[z+1]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            check();
-          }
-
-      /* E->LESE | LELE */
-       for(z=0; z<15; z++)
-         if(stk[z]=='L' &&  stk[z+1]=='E' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='E')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-       /* E->LNSE | LNLE */
-        for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='N' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='E')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              stk[z+3]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-3;
-              check();
-            }
-
-       /* E->LMSM | LMLM */
-        for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='M')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              stk[z+3]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-3;
-              check();
-            }
-
-        /* E->LESM | LELM */
-         for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='E' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='M')
-             {
-               stk[z]='E';
-               stk[z+1]='\0';
-               stk[z+2]='\0';
-               stk[z+3]='\0';
-               printf("\n$%s\t%s$\t%s",stk,a,ac);
-               i=i-3;
-               check();
-             }
-
-         /* E->LMSE | LMLE */
-          for(z=0; z<15; z++)
-            if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='E')
-              {
-                stk[z]='E';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                stk[z+3]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-3;
-                check();
-              }
-
-            /* E->LNSM | LNLM */
-             for(z=0; z<15; z++)
-               if(stk[z]=='L' &&  stk[z+1]=='N' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='M')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   stk[z+3]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-3;
-                   check();
-                 }
-
-             /* E->LMSN | LMLN */
-              for(z=0; z<15; z++)
-                if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-                  {
-                    stk[z]='E';
-                    stk[z+1]='\0';
-                    stk[z+2]='\0';
-                    stk[z+3]='\0';
-                    printf("\n$%s\t%s$\t%s",stk,a,ac);
-                    i=i-3;
-                    check();
-                  }
-
-          /* E->LNSN | LNLN */
-           for(z=0; z<15; z++)
-             if(stk[z]=='L' &&  stk[z+1]=='N' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-               {
-                 stk[z]='B';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 stk[z+3]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-3;
-                 check();
-               }
-
-           /* E->LESN | LELN */
-            for(z=0; z<15; z++)
-              if(stk[z]=='L' &&  stk[z+1]=='E' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-                {
-                  stk[z]='B';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  stk[z+3]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-3;
-                  check();
-                }
-
-            /* E->LMSN | LMLN */
-             for(z=0; z<15; z++)
-               if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-                 {
-                   stk[z]='B';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   stk[z+3]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-3;
-                   check();
-                 }
-
-       /* M->(LE) */
-        for(z=0; z<15; z++)
-          if(stk[z]=='(' &&  stk[z+1]=='L' && ( stk[z+2]=='E' || stk[z+2]=='A' || stk[z+2]=='B' || stk[z+2] == 'I' )  && stk[z+3]==')')
-            {
-              stk[z]='M';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              stk[z+3]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-3;
-              check();
-            }
-      /*E->EN*/
-      for(z=0; z<15; z++)
-        if(stk[z] == 'E' && stk[z+1] == 'N')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-1;
-            check();
-          }
-       /* E->ESE | ELE */
-        for(z=0; z<15; z++)
-          if(stk[z]=='E' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-2;
-              check();
-            }
-
-        /* E->MSM | MLM */
-         for(z=0; z<15; z++)
-           if(stk[z]=='M' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-             {
-               stk[z]='E';
-               stk[z+1]='\0';
-               stk[z+2]='\0';
-               printf("\n$%s\t%s$\t%s",stk,a,ac);
-               i=i-2;
-               check();
-             }
-
-         /* E->ESM | ELM */
-          for(z=0; z<15; z++)
-            if(stk[z]=='E' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-              {
-                stk[z]='E';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-
-          /* E->MSE | MLE */
-           for(z=0; z<15; z++)
-             if(stk[z]=='M' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-               {
-                 stk[z]='E';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-
-         /* E->NSM | NLM */
-          for(z=0; z<15; z++)
-            if(stk[z]=='N' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-              {
-                stk[z]='E';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-
-          /* E->MSN | MLN */
-           for(z=0; z<15; z++)
-             if(stk[z]=='M' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-               {
-                 stk[z]='B';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-        /* E->ESN | ELN */
-         for(z=0; z<15; z++)
-           if(stk[z]=='E' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-             {
-               stk[z]='B';
-               stk[z+1]='\0';
-               stk[z+2]='\0';
-               printf("\n$%s\t%s$\t%s",stk,a,ac);
-               i=i-2;
-               check();
-             }
-         /* E->NSE | NLE */
-          for(z=0; z<15; z++)
-            if(stk[z]=='N' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-              {
-                stk[z]='E';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-
-        /* E->BSE | BLE */
-         for(z=0; z<15; z++)
-           if(stk[z]=='B' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-             {
-               stk[z]='E';
-               stk[z+1]='\0';
-               stk[z+2]='\0';
-               printf("\n$%s\t%s$\t%s",stk,a,ac);
-               i=i-2;
-               check();
-             }
-
-       /* E->BSM | BLM */
-        for(z=0; z<15; z++)
-          if(stk[z]=='B' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-            {
-              stk[z]='E';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-2;
-              check();
-            }
-
-          /* E->BSA | BLA */
-           for(z=0; z<15; z++)
-             if(stk[z]=='B' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='A')
-               {
-                 stk[z]='E';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-
-         /* B->BSN | BLN */
-          for(z=0; z<15; z++)
-            if(stk[z]=='B' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-              {
-                stk[z]='B';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-          /* E->NSN | NLN */
-           for(z=0; z<15; z++)
-             if(stk[z]=='N' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-               {
-                 stk[z]='B';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-         /*E->(E)*/
-        for(z=0; z<15; z++)
-          if(stk[z]=='(' && (stk[z+1]=='E' || stk[z+1]=='A' || stk[z+1] == 'B' || stk[z+1] == 'I') && stk[z+2]==')')
-            {
-              stk[z]='M';
-              stk[z+1]='\0';
-              stk[z+2]='\0';
-              printf("\n$%s\t%s$\t%s",stk,a,ac);
-              i=i-2;
-              check();
-            }
-
-      /*Bagian Koma*/
-        /* A->NDN | NDE */
-         for(z=0; z<15; z++)
-           if(stk[z]=='N' && stk[z+1] == 'D' && (stk[z+2] == 'N' || stk[z+2] == 'E'))
-             {
-               stk[z]='A';
-               stk[z+1]='\0';
-               stk[z+2]='\0';
-               printf("\n$%s\t%s$\t%s",stk,a,ac);
-               i=i-2;
-               check();
-             }
-
-             /* A->BDN | BDE */
-             for(z=0; z<15; z++)
-               if(stk[z]=='B' && stk[z+1] == 'D' && (stk[z+2] == 'N' || stk[z+2] == 'E'))
-                 {
-                   stk[z]='A';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-         /* A->EDN | EDE */
-          for(z=0; z<15; z++)
-            if(stk[z]=='E' && stk[z+1] == 'D' && (stk[z+2] == 'N' || stk[z+2] == 'E'))
-              {
-                stk[z]='A';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-
-          /*A->AN | AE*/
-          for(z=0; z<15; z++)
-            if(stk[z] == 'A' && (stk[z+1] == 'N' || stk[z+1] == 'E'))
-              {
-                stk[z]='A';
-                stk[z+1]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-1;
-                check();
-              }
-
-          /* E->LNSA | LNLA */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='N' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='A')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->LESA | LELA */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='E' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='A')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->LASA | LALA */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='A' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='A')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* B->LASN | LALN */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='A' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-          {
-            stk[z]='B';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->LMSA | LMLA */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='A')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->LASM | LALM */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='A' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='M')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->LASE | LALE */
-          for(z=0; z<15; z++)
-          if(stk[z]=='L' &&  stk[z+1]=='A' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='E')
-          {
-            stk[z]='E';
-            stk[z+1]='\0';
-            stk[z+2]='\0';
-            stk[z+3]='\0';
-            printf("\n$%s\t%s$\t%s",stk,a,ac);
-            i=i-3;
-            check();
-          }
-
-          /* E->ASA | ALA */
-           for(z=0; z<15; z++)
-             if(stk[z]=='A' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='A')
-               {
-                 stk[z]='E';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-
-         /* E->ASE | ALE */
-          for(z=0; z<15; z++)
-            if(stk[z]=='A' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-              {
-                stk[z]='E';
-                stk[z+1]='\0';
-                stk[z+2]='\0';
-                printf("\n$%s\t%s$\t%s",stk,a,ac);
-                i=i-2;
-                check();
-              }
-
-          /* E->ESA | ELA */
-           for(z=0; z<15; z++)
-             if(stk[z]=='E' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='A')
-               {
-                 stk[z]='E';
-                 stk[z+1]='\0';
-                 stk[z+2]='\0';
-                 printf("\n$%s\t%s$\t%s",stk,a,ac);
-                 i=i-2;
-                 check();
-               }
-
-           /* E->ASN | ALN */
-            for(z=0; z<15; z++)
-              if(stk[z]=='A' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-                {
-                  stk[z]='B';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-2;
-                  check();
-                }
-
-            /* E->NSA | NLA */
-             for(z=0; z<15; z++)
-               if(stk[z]=='N' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='A')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-           /* E->ASM | ALM */
-            for(z=0; z<15; z++)
-              if(stk[z]=='A' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-                {
-                  stk[z]='E';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-2;
-                  check();
-                }
-
-            /* E->MSA | MLA */
-             for(z=0; z<15; z++)
-               if(stk[z]=='M' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='A')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-           /*Imajiner*/
-           /* E->LISI | LILI */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='I' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='I')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LISE | LILE */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='I' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='E')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LESI | LELI */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='E' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='I')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LMSI | LMLI */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='M' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='I')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LISM | LILM */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='I' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='M')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LNSI | LNLI */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='N' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='I')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->LASI | LALI */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='A' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='I')
-           {
-             stk[z]='E';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* B->LISN | LILN */
-           for(z=0; z<15; z++)
-           if(stk[z]=='L' &&  stk[z+1]=='I' && (stk[z+2]=='S' || stk[z+2]=='L')  && stk[z+3]=='N')
-           {
-             stk[z]='B';
-             stk[z+1]='\0';
-             stk[z+2]='\0';
-             stk[z+3]='\0';
-             printf("\n$%s\t%s$\t%s",stk,a,ac);
-             i=i-3;
-             check();
-           }
-
-           /* E->ILI | ISI */
-            for(z=0; z<15; z++)
-              if(stk[z]=='I' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='I')
-                {
-                  stk[z]='E';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-2;
-                  check();
-                }
-
-            /* E->ALI | ASI */
-             for(z=0; z<15; z++)
-               if(stk[z]=='A' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='I')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-
-            /* E->ILE | ISE */
-             for(z=0; z<15; z++)
-               if(stk[z]=='I' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='E')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-           /* E->ELI | ESI */
-            for(z=0; z<15; z++)
-              if(stk[z]=='E' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='I')
-                {
-                  stk[z]='E';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-2;
-                  check();
-                }
-
-            /* E->MLI | MSI */
-             for(z=0; z<15; z++)
-               if(stk[z]=='M' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='I')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-             /* E->ILM | ISM */
-              for(z=0; z<15; z++)
-                if(stk[z]=='I' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='M')
-                  {
-                    stk[z]='E';
-                    stk[z+1]='\0';
-                    stk[z+2]='\0';
-                    printf("\n$%s\t%s$\t%s",stk,a,ac);
-                    i=i-2;
-                    check();
-                  }
-
-            /* E->NLI | NSI */
-             for(z=0; z<15; z++)
-               if(stk[z]=='N' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='I')
-                 {
-                   stk[z]='E';
-                   stk[z+1]='\0';
-                   stk[z+2]='\0';
-                   printf("\n$%s\t%s$\t%s",stk,a,ac);
-                   i=i-2;
-                   check();
-                 }
-
-           /* B->ILN | ISN */
-            for(z=0; z<15; z++)
-              if(stk[z]=='I' && ( stk[z+1]=='S' || stk[z+1]=='L' ) && stk[z+2]=='N')
-                {
-                  stk[z]='B';
-                  stk[z+1]='\0';
-                  stk[z+2]='\0';
-                  printf("\n$%s\t%s$\t%s",stk,a,ac);
-                  i=i-2;
-                  check();
-                }
-
+  int pos;
+  for (m = 1; m<=n; m++){
+    if ( strstr(stk,gsplit[m]) != NULL){
+      pos = strstr(stk,gsplit[m])-stk;
+      stk[pos] = gsplit[0][0];
+      stk[pos+1] = '\0';
+      if (strlen(gsplit[m])>2){
+        for (k=pos+2;k<=pos+strlen(gsplit[m])-1;k++){
+          stk[k] = '\0';
+        }
       }
+      printf("\n$%s\t%s$\t%s\n",stk,a,ac);
+      i = i - strlen(gsplit[m]) + 1;
+      check();
+      break;
+    } 
+  }
+}
+
+
+void check(){
+  strcpy(ac,"REDUCE TO E");
+
+  /*E->1|2|3|4|5|6|7|8|9*/
+  ShiftReduce("E->1|2|3|4|5|6|7|8|9");
+
+  /* C -> i */
+  ShiftReduce("C->i");
+
+  /*E->EE*/
+  ShiftReduce("E->EE");
+
+  /*I->BC|EC|NC|AC*/
+  ShiftReduce("I->BC|EC|NC|AC");
+
+  /*I->C*/
+  ShiftReduce("I->C");
+
+  /* S->+|*|/|^ */
+  ShiftReduce("S->+|*|/|^");
+
+  /*N->0*/
+  ShiftReduce("N->0");
+
+  /*D->.*/
+  ShiftReduce("D->.");
+
+  /*L->-*/
+  ShiftReduce("L->-");
+
+  /* E->LESE | LELE */
+  ShiftReduce("E->LESE|LELE");
+
+  /* E->LNSE | LNLE */
+  ShiftReduce("E->LNSE|LNLE");
+
+  /* E->LMSM | LMLM */
+  ShiftReduce("E->LMSM|LMLM");
+
+  /* E->LESM | LELM */
+  ShiftReduce("E->LESM|LELM");
+
+  /* E->LMSE | LMLE */
+  ShiftReduce("E->LMSE|LMLE"); 
+         
+  /* E->LNSM | LNLM */
+  ShiftReduce("E->LNSM|LNLM");
+
+  /* E->LMSN | LMLN */
+  ShiftReduce("E->LMSN|LMLN"); 
+
+  /* B->LNSN|LNLN */
+  ShiftReduce("B->LNSN|LNLN");  
+
+  /* B->LESN | LELN */
+  ShiftReduce("B->LESN|LELN"); 
+
+  /* B->LMSN | LMLN */
+  ShiftReduce("B->LMSN|LMLN"); 
+
+  /* M->(LE) */
+  ShiftReduce("M->(LE)"); 
+
+  /*E->EN*/
+  ShiftReduce("E->EN");
+
+  /* E->ESE | ELE */
+  ShiftReduce("E->ESE|ELE");
+        
+  /* E->MSM | MLM */
+  ShiftReduce("E->MSM|MLM");
+
+  /* E->ESM | ELM */
+  ShiftReduce("E->ESM|ELM");
+
+  /* E->MSE | MLE */
+  ShiftReduce("E->MSE|MLE");
+
+  /* E->NSM | NLM */
+  ShiftReduce("E->NSM|NLM");
+
+  /* B->MSN | MLN */
+  ShiftReduce("B->MSN|MLN");
+
+  /* B->ESN | ELN */
+  ShiftReduce("B->ESN|ELN");
+
+  /* E->NSE | NLE */
+  ShiftReduce("E->NSE|NLE");
+
+  /* E->BSE | BLE */
+  ShiftReduce("E->BSE|BLE");
+
+  /* E->BSM | BLM */
+  ShiftReduce("E->BSM|BLM");
+
+  /* E->BSA | BLA */
+  ShiftReduce("E->BSA|BLA");
+
+  /* B->BSN | BLN */
+  ShiftReduce("B->BSN|BLN");
+
+  /* B->NSN | NLN */
+  ShiftReduce("B->NSN|NLN");
+
+  /*M->(E)|(A)|(B)|(I)*/
+  ShiftReduce("M->(E)|(A)|(B)|(I)");
+
+  /*Bagian Koma*/
+  /* A->NDN | NDE */
+  ShiftReduce("A->NDN|NDE");
+
+  /* A->BDN | BDE */
+  ShiftReduce("A->BDN|BDE");
+
+  /* A->EDN | EDE */
+  ShiftReduce("A->EDN|EDE");
+
+  /*A->AN | AE*/
+  ShiftReduce("A->AN|AE");
+
+  /* E->LNSA | LNLA */
+  ShiftReduce("E->LNSA|LNLA");
+
+  /* E->LESA | LELA */
+  ShiftReduce("E->LESA|LELA");
+
+  /* E->LASA | LALA */
+  ShiftReduce("E->LASA|LALA");
+
+  /* B->LASN | LALN */
+  ShiftReduce("B->LASN|LALN");
+
+  /* E->LMSA | LMLA */
+  ShiftReduce("E->LMSA|LMLA");
+
+  /* E->LASM | LALM */
+  ShiftReduce("E->LASM|LALM");
+
+  /* E->LASE | LALE */
+  ShiftReduce("E->LASE|LALE");
+
+  /* E->ASA | ALA */
+  ShiftReduce("E->ASA|ALA");
+
+  /* E->ASE | ALE */
+  ShiftReduce("E->ASE|ALE");
+
+  /* E->ESA | ELA */
+  ShiftReduce("E->ESA|ELA");
+
+  /* B->ASN | ALN */
+  ShiftReduce("B->ASN|ALN");
+
+  /* E->NSA | NLA */
+  ShiftReduce("E->NSA|NLA");
+
+  /* E->ASM | ALM */
+  ShiftReduce("E->ASM|ALM");
+
+  /* E->MSA | MLA */
+  ShiftReduce("E->MSA|MLA");
+
+  /*Imajiner*/
+  /* E->LISI | LILI */
+  ShiftReduce("E->LISI|LILI");
+
+  /* E->LISE | LILE */
+  ShiftReduce("E->LISE|LILE");
+
+  /* E->LESI | LELI */
+  ShiftReduce("E->LESI|LELI");
+
+  /* E->LMSI | LMLI */
+  ShiftReduce("E->LMSI|LMLI");
+
+  /* E->LISM | LILM */
+  ShiftReduce("E->LISM|LILM");
+
+  /* E->LNSI | LNLI */
+  ShiftReduce("E->LNSI|LNLI");
+
+  /* E->LASI | LALI */
+  ShiftReduce("E->LASI|LALI");
+
+  /* B->LISN | LILN */
+  ShiftReduce("B->LISN|LILN");
+
+  /* E->ILI | ISI */
+  ShiftReduce("E->ILI|ISI");
+
+  /* E->ALI | ASI */
+  ShiftReduce("E->ALI|ASI");
+
+  /* E->ILE | ISE */
+  ShiftReduce("E->ILE|ISE");
+
+  /* E->ELI | ESI */
+  ShiftReduce("E->ELI|ESI");
+
+  /* E->MLI | MSI */
+  ShiftReduce("E->MLI|MSI");
+
+  /* E->ILM | ISM */
+  ShiftReduce("E->ILM|ISM");
+
+  /* E->NLI | NSI */
+  ShiftReduce("E->NLI|NSI");
+
+  /* B->ILN | ISN */
+  ShiftReduce("B->ILN|ISN");
+
+}
 
 boolean Angka(char c){ //validasi angka
 	return ((c-'0'<=10)&&(c-'0'>=0));
 }
+
 void balik(Stack *s1,Stack *s2){ //balik stack s1 ke s2
 	infotype tmp;
 
@@ -1020,6 +463,7 @@ void balik(Stack *s1,Stack *s2){ //balik stack s1 ke s2
 		Push(s2,tmp);
 	}
 }
+
 void operasi1(Stack *s1,Stack *s2){ //melakukan operasi ^ dari s1 ke s2
 	infotype tmp,save;
 	while (!IsEmpty(*s1)){
@@ -1033,6 +477,7 @@ void operasi1(Stack *s1,Stack *s2){ //melakukan operasi ^ dari s1 ke s2
 		Push(s2,tmp);
 	}
 }
+
 void operasi2(Stack *s1,Stack *s2){ //melakukan operasi * dan / dari s1 ke s2
 	infotype tmp,save;
 	while (!IsEmpty(*s1)){
@@ -1051,6 +496,7 @@ void operasi2(Stack *s1,Stack *s2){ //melakukan operasi * dan / dari s1 ke s2
 		Push(s2,tmp);
 	}
 }
+
 void operasi3(Stack *s1,Stack *s2){ //melakukan operasi + dan - dari s1 ke s2
 	infotype tmp,save,x;
 	x.val=0;
