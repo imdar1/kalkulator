@@ -7,7 +7,7 @@
 #include "stack.c"
 
 /* Global Variable */
-int k=0,i=0,j=0;
+int k,i,j;
 char a[256],chk[25];
 
 /* Constant */
@@ -38,13 +38,13 @@ void operasi3(Stack *s1,Stack *s2);
 /* Operasi yang mempunyai tingkat prioritas terakhir yaitu + dan - */
 
 int main(){
-    double inf=INFINITY;
+	double inf=INFINITY;
 	char cmd[20];
 	char kal[256];
+	int c;
 	boolean found,error,imaginer;
 	infotype token,tmp;
-	long l=0,pj,cnt;
-	int c = 0;
+	long l,pj,cnt;
 	double complex save;
 	Stack stemp,s,srev;
 	error=false;
@@ -74,6 +74,7 @@ int main(){
     		isExit = true;
 		}
 		else {
+			i = 0; j = 0; k = 0; c = 0; 
 			printf("Hasil :\n");
 			strcpy(a,cmd);
     		strcpy(kal,a);
@@ -91,6 +92,7 @@ int main(){
        		  (chk[0] == '(' && chk[1]=='N' && chk[2]==')' && chk[3] == '\0' && a[j-1] == ' '))
        		  && a[j-1] == ' '){
         		CreateEmpty(&stemp);CreateEmpty(&s);CreateEmpty(&srev);
+				l = 0;
         		pj=strlen(kal);
 	      		while(pj>l){
 		      		if(kal[l]=='i'){	//ketika menemukan i saja
